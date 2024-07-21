@@ -1,4 +1,4 @@
-package algs13;
+package algs32;
 
 import java.util.Scanner;
 import stdlib.*;
@@ -37,7 +37,6 @@ public class XBTree {
 		return StdRandom.uniform (100);
 	}
 
-
 	// prefix with parenthesis
 	public String toString () {
 		StringBuilder sb = new StringBuilder ();
@@ -64,7 +63,7 @@ public class XBTree {
 		toGraphviz (gb, null, root);
 		gb.toFileUndirected (filename, "ordering=\"out\"");
 	}
-	private static void toGraphviz (GraphvizBuilder gb, BNode parent, BNode n) {
+	private void toGraphviz (GraphvizBuilder gb, BNode parent, BNode n) {
 		if (n == null) {
 			gb.addNullEdge (parent);
 			return;
@@ -88,7 +87,7 @@ public class XBTree {
 		double val = StdRandom.uniform (10);
 		return new BNode (val, left, right);
 	}
-
+	
 	// Parses the following kinds of tree "T"
 	// T ::= "X" -- empty
 	// T ::= num -- a node with no children
@@ -136,7 +135,7 @@ public class XBTree {
 			StdOut.format ("error%d.depthOfShallowestFive: expected=%d, actual=%d\n", count, expected, actual);
 		}
 	}
-
+	
 	public static boolean DEBUG = false;
 	public static XBTree demoTree () {
 		String sl = "( 0 ( 0 X ( 0 ( 0 X ( 0 X X ) ) X ) ) ( 0 X ( 0 X X ) ) )";
@@ -145,76 +144,57 @@ public class XBTree {
 		return XBTree.of (s);
 	}
 	public static void main (String[] args) {
-		if (DEBUG) {
-			Trace.drawStepsOfMethod("main");
-			Trace.drawStepsOfMethod("depth");
-			Trace.drawStepsOfMethod("height");
-			Trace.drawStepsOfMethod("depthOfShallowestFive");
-			Trace.drawStepsOfMethod("heightOfShortestFive");
-			Trace.run (); 
-			XBTree t0 = demoTree();
-			t0.root.right.right.item = 5.0;
-			testDepthOfShallowestFive(t0, 2);
-			return;
-		}
-		{
-			XBTree t0 = demoTree();			
-			testDepthOfShallowestFive(t0, -1);
-			t0.root.right.left.right.left.left.item = 5.0;
-			testDepthOfShallowestFive(t0, 5);
-			t0.root.left.left.left.left.left.item = 5.0;
-			testDepthOfShallowestFive(t0, 5);
-			t0.root.left.left.left.left.item = 5.0;
-			testDepthOfShallowestFive(t0, 4);
-			t0.root.right.left.right.item = 5.0;
-			testDepthOfShallowestFive(t0, 3);
-			t0.root.right.right.item = 5.0;
-			testDepthOfShallowestFive(t0, 2);
-			t0.root.left.item = 5.0;
-			testDepthOfShallowestFive(t0, 1);
-			t0.root.item = 5.0;
-			testDepthOfShallowestFive(t0, 0);
-		}
-		{
-			XBTree t1 = demoTree();			
-			testHeightOfShortestFive(t1, -7);
-			t1.root.item = 5.0;
-			testHeightOfShortestFive(t1, 5);
-			t1.root.left.item = 5.0;
-			testHeightOfShortestFive(t1, 4);
-			t1.root.right.item = 5.0;
-			testHeightOfShortestFive(t1, 4);		
-			t1.root.right.left.item = 5.0;
-			testHeightOfShortestFive(t1, 3);
-			t1.root.left.left.left.item = 5.0;
-			testHeightOfShortestFive(t1, 2);
-			t1.root.left.left.left.left.item = 5.0;
-			testHeightOfShortestFive(t1, 1);
-			t1.root.right.left.right.left.left.item = 5.0;
-			testHeightOfShortestFive(t1, 0);
-		}
-		{
-			XBTree t2 = demoTree();			
-			t2.root.left.left.left.left.item = 5.0;
-			t2.root.right.right.item = 5.0;
-			t2.toGraphviz ("t2.png");		
-			StdOut.format ("t2: %s\n", t2);
-			StdOut.format ("%d = t2.depth()\n", t2.depth ());
-			StdOut.format ("%d = t2.height()\n", t2.height ());
-			StdOut.format ("%d = t2.depthOfShallowestFive()\n", t2.depthOfShallowestFive ());
-			StdOut.format ("%d = t2.heightOfShortestFive()\n", t2.heightOfShortestFive ());
-		}
+		if (DEBUG) Trace.run (); 
+		
+		XBTree t0 = demoTree();			
+		testDepthOfShallowestFive(t0, -1);
+		t0.root.right.left.right.left.left.item = 5.0;
+		testDepthOfShallowestFive(t0, 5);
+		t0.root.left.left.left.left.left.item = 5.0;
+		testDepthOfShallowestFive(t0, 5);
+		t0.root.left.left.left.left.item = 5.0;
+		testDepthOfShallowestFive(t0, 4);
+		t0.root.right.left.right.item = 5.0;
+		testDepthOfShallowestFive(t0, 3);
+		t0.root.right.right.item = 5.0;
+		testDepthOfShallowestFive(t0, 2);
+		t0.root.left.item = 5.0;
+		testDepthOfShallowestFive(t0, 1);
+		t0.root.item = 5.0;
+		testDepthOfShallowestFive(t0, 0);
 
-		int NUM_RANDOM = 10;
-		for (int i=0; i<NUM_RANDOM; i++) {
-			XBTree t3 = randomTree (0.11, StdRandom.uniform(3, 9));
-			t3.toGraphviz ("t3" + i + ".png");
-			StdOut.format ("t3: %s\n", t3);			
-			StdOut.format ("%d = t3.depth()\n", t3.depth ());
-			StdOut.format ("%d = t3.height()\n", t3.height ());
-			StdOut.format ("%d = t3.depthOfShallowestFive()\n", t3.depthOfShallowestFive ());
-			StdOut.format ("%d = t3.heightOfShortestFive()\n", t3.heightOfShortestFive ());
-		}
+		XBTree t1 = demoTree();			
+		testHeightOfShortestFive(t1, -7);
+		t1.root.item = 5.0;
+		testHeightOfShortestFive(t1, 5);
+		t1.root.left.item = 5.0;
+		testHeightOfShortestFive(t1, 4);
+		t1.root.right.item = 5.0;
+		testHeightOfShortestFive(t1, 4);		
+		t1.root.right.left.item = 5.0;
+		testHeightOfShortestFive(t1, 3);
+		t1.root.left.left.left.item = 5.0;
+		testHeightOfShortestFive(t1, 2);
+		t1.root.left.left.left.left.item = 5.0;
+		testHeightOfShortestFive(t1, 1);
+		t1.root.right.left.right.left.left.item = 5.0;
+		testHeightOfShortestFive(t1, 0);
 		StdOut.println ("Finished tests");
+		
+//		YBTree t2 = demoTree();			
+//		t2.toGraphviz ("t2.png");		
+//		StdOut.format ("t2: %s\n", t2);
+//		StdOut.format ("%d = t2.depth()\n", t2.depth ());
+//		StdOut.format ("%d = t2.height()\n", t2.height ());
+//		StdOut.format ("%d = t2.depthOfShallowestFive()\n", t2.depthOfShallowestFive ());
+//		StdOut.format ("%d = t2.heightOfShortestFive()\n", t2.heightOfShortestFive ());
+//		
+//		YBTree t3 = randomTree (0.10, 6);
+//		t3.toGraphviz ("t3.png");
+//		StdOut.format ("t3: %s\n", tree0);			
+//		StdOut.format ("%d = t3.depth()\n", t3.depth ());
+//		StdOut.format ("%d = t3.height()\n", t3.height ());
+//		StdOut.format ("%d = t3.depthOfShallowestFive()\n", t3.depthOfShallowestFive ());
+//		StdOut.format ("%d = t3.heightOfShortestFive()\n", t3.heightOfShortestFive ());
 	}
 }
